@@ -1,0 +1,190 @@
+@inject MobileService Api
+<main class="app-shell">
+@if(initializing)
+{
+    <div class="splash"><div class="brand-mark">C<span>•</span></div><h1>ClickClub</h1><p>Seu clube, sempre com você.</p><div class="loading-line"></div></div>
+}
+else if(!Api.SignedIn)
+{
+    <div class="auth-header"><div class="wordmark"><span class="mini-mark">C•</span> ClickClub</div><button class="icon-btn" @onclick="OpenSettings" aria-label="Configurar API">⚙</button></div>
+    <div class="auth-body">
+    @if(page=="config")
+    {
+        <p class="eyebrow">CONEXÃO</p><h1>Conecte ao seu clube.</h1><p class="muted">Informe o endereço da API ClickClub que você iniciou no computador.</p>
+        <form @onsubmit="SaveConfiguration" @onsubmit:preventDefault>
+            <FormField Name="server" Label="Endereço da API" Values="form" Type="url" Required="true" Placeholder="http://10.0.2.2:5080/" />
+            <div class="info-box">Emulador Android: <strong>10.0.2.2:5080</strong><br/>Celular físico: use o IP do computador na mesma rede.</div>
+            <button class="button primary full" disabled="@busy">Salvar e voltar</button>
+        </form>
+    }
+    else if(page=="signup")
+    {
+        <p class="eyebrow">VENHA FAZER PARTE</p><h1>Seu próximo encontro começa aqui.</h1><p class="muted">Solicite sua adesão. A administração do clube analisará seu pedido.</p>
+        <form @onsubmit="SignUp" @onsubmit:preventDefault>
+            <FormField Name="nome" Label="Nome completo" Values="form" Required="true" Autocomplete="name"/>
+            <FormField Name="email" Label="E-mail" Type="email" Values="form" Required="true" Autocomplete="email"/>
+            <FormField Name="clubeId" Label="Clube de origem" Values="form" Options="ClubOptions" Required="true"/>
+            <FormField Name="tipoVinculo" Label="Tipo de adesão" Values="form" Options="LinkOptions" Required="true"/>
+            <FormField Name="login" Label="Nome de usuário" Values="form" Required="true" Autocomplete="username"/>
+            <FormField Name="senha" Label="Senha" Type="password" Values="form" Required="true" Hint="Pelo menos 8 caracteres." Autocomplete="new-password"/>
+            <button class="button primary full" disabled="@busy">Enviar solicitação</button>
+        </form>
+        <button class="text-button" @onclick="ShowLogin">Já tenho uma conta</button>
+    }
+    else
+    {
+        <div class="hero-art"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><span>seu tempo.<br/><strong>seu clube.</strong></span><div class="art-dot"></div><small>MAIS CONEXÕES, MAIS MOMENTOS</small></div>
+        <p class="eyebrow">BEM-VINDO AO CLICKCLUB</p><h1>É bom ter você<br/>por aqui.</h1><p class="muted">Entre para reservar seus espaços, acompanhar o clube e levar sua carteirinha com você.</p>
+        <form @onsubmit="Login" @onsubmit:preventDefault>
+            <FormField Name="login" Label="Usuário" Values="form" Required="true" Autocomplete="username" Placeholder="Seu usuário"/>
+            <FormField Name="senha" Label="Senha" Values="form" Type="password" Required="true" Autocomplete="current-password" Placeholder="Sua senha"/>
+            <button class="button primary full" disabled="@busy">@(busy?"Entrando…":"Entrar na minha conta") <span>↗</span></button>
+        </form>
+        <p class="signup-prompt">Ainda não faz parte? <button class="text-button inline" @onclick="ShowSignup">Solicitar adesão</button></p>
+        <div class="connection-line"><span></span> @Api.ApiUrl <button @onclick="OpenSettings">Configurar</button></div>
+    }
+    @if(!string.IsNullOrEmpty(error)){<div class="alert error" role="alert">@error</div>}
+    @if(!string.IsNullOrEmpty(message)){<div class="alert success" role="status">@message</div>}
+    </div>
+}
+else
+{
+    <header class="topbar"><button class="wordmark" @onclick='()=>Navigate("home")'><span class="mini-mark">C•</span> ClickClub</button><button class="avatar" @onclick='()=>Navigate("profile")' aria-label="Meu perfil">@Initials(Api.UserName)</button></header>
+    <section class="page-body">
+        @if(!string.IsNullOrEmpty(error)){<div class="alert error" role="alert">@error</div>}
+        @if(!string.IsNullOrEmpty(message)){<div class="alert success" role="status">@message</div>}
+        @if(offline){<div class="offline-banner">◌ Sem conexão · exibindo a última sincronização. Alterações exigem internet.</div>}
+        @if(busy){<div class="progress-bar" aria-label="Carregando"></div>}
+        @if(page=="home")
+        {
+            <div class="greeting"><p class="eyebrow">SEU CLUBE, SEU LUGAR</p><h1>Olá, @FirstName(Api.UserName)<span class="green-dot">.</span></h1><p class="muted">Que tal aproveitar o dia no clube?</p></div>
+            @if(Api.Candidate)
+            {
+                <div class="feature-card navy"><span class="pill light">ADESÃO EM ANÁLISE</span><h2>Estamos preparando<br/>seu próximo capítulo.</h2><p>Acompanhe a aprovação do seu pedido. Os serviços de associado serão liberados após a decisão.</p><button class="button white" @onclick='()=>Navigate("applications")'>Acompanhar meu pedido ↗</button></div>
+            }
+            else
+            {
+                <button class="membership-preview" @onclick='()=>Navigate("card")'><div><span class="eyebrow">CARTEIRINHA DIGITAL</span><h2>Seu acesso.<br/>Na palma da mão.</h2><span class="card-cta">Abrir carteirinha ↗</span></div><div class="qr-mini">▦</div><span class="card-ring"></span></button>
+                @if(association is not null){<div class="member-line"><span>@association["associacao"].Text("categoria") · @association["clube"].Text("nome")</span><span class="badge @(association.Flag("bloqueada")?"danger":"good")">@(!association["associacao"].Flag("ativa")?"Associação inativa":association.Flag("bloqueada")?"Verificar mensalidade":"Associação ativa")</span></div>}
+                <div class="section-heading"><h2>O que vamos fazer?</h2><span>EXPLORAR</span></div>
+                <div class="quick-grid"><button @onclick='()=>Navigate("reservations")'><span class="tile-icon mint">▦</span><strong>Reservar espaço</strong><small>Seu próximo encontro</small></button><button @onclick='()=>Navigate("courses")'><span class="tile-icon peach">↗</span><strong>Atividades</strong><small>Movimente sua rotina</small></button><button @onclick='()=>Navigate("events")'><span class="tile-icon lavender">✦</span><strong>Eventos</strong><small>Momentos para viver</small></button><button @onclick='()=>Navigate(Api.Dependent?"family":"invoices")'><span class="tile-icon blue">@(Api.Dependent?"♡":"↔")</span><strong>@(Api.Dependent?"Minha associação":"Financeiro")</strong><small>@(Api.Dependent?"Seu vínculo no clube":"Tudo em dia")</small></button></div>
+            }
+            <div class="section-heading"><h2>No mural do clube</h2><button @onclick='()=>Navigate("notices")'>Ver todos →</button></div>
+            @if(notices.Count==0){<div class="empty-state small"><span>✦</span><p>Nenhum aviso por enquanto.</p></div>}
+            @foreach(var n in notices.Take(3)){<article class="notice-card"><span class="eyebrow">@ClubName(n.Text("clubeId"))</span><h3>@n.Text("titulo")</h3><p>@n.Text("corpo")</p></article>}
+            <div class="support-link"><div><strong>Estamos por aqui.</strong><p>Dúvidas ou sugestões? Fale com o clube.</p></div><button class="icon-btn" @onclick='()=>Navigate("tickets")'>↗</button></div>
+        }
+        else if(page=="card")
+        {
+            <PageHeading Title="Minha carteirinha" Subtitle="Seu próximo momento começa por aqui." OnBack='()=>Navigate("home")'/>
+            @if(card is not null)
+            {
+                <div class="digital-card"><div class="card-brand">C• <span>ClickClub</span><small>ASSOCIADO</small></div><p class="eyebrow">@card.Data.Text("clube","CLUBE SOCIAL")</p><h2>@Api.UserName</h2><p>@card.Data.Text("categoria") · Matrícula @card.Data.Text("matricula","—")</p><div class="qr-wrap @(card.Expired?"expired":"")">@((MarkupString)card.QrSvg)</div><span class="badge @(card.Expired?"danger":"good")">@(card.Expired?"Credencial expirada":card.Offline?"Disponível offline":"Credencial atualizada")</span><p class="card-validity">Válida até @Date(card.Data.Text("validaAte"))</p></div>
+                <div class="info-box">@(card.Expired?"Conecte à internet e renove sua carteirinha para apresentá-la.":"Você pode exibir este QR sem internet até o vencimento. A portaria confirma a entrada online.")</div>
+            }
+            <button class="button primary full" disabled="@busy" @onclick="LoadCard">Atualizar carteirinha ↻</button>
+        }
+        else if(page=="reservations")
+        {
+            <PageHeading Title="Meus espaços" Subtitle="Encontre o lugar para seu próximo encontro." OnBack='()=>Navigate("home")'/>
+            <div class="segmented"><button class="@(reservationTab=="mine"?"active":"")" @onclick='()=>reservationTab="mine"'>Minhas reservas</button><button class="@(reservationTab=="spaces"?"active":"")" @onclick='()=>reservationTab="spaces"'>Explorar espaços</button></div>
+            @if(reservationTab=="spaces")
+            {
+                @foreach(var s in spaces.Where(s=>s.Flag("ativo"))){<article class="space-card"><div class="space-art @SpaceColor(s)"><span>@SpaceIcon(s)</span><small>@s.Text("tipo")</small></div><div class="item-body"><p class="eyebrow">@ClubName(s.Text("clubeId"))</p><h3>@s.Text("nome")</h3><p>@s.Text("capacidade") pessoas · @Money(s.Text("taxa"))</p><div class="row-actions"><button class="button secondary" @onclick='()=>OpenAgenda(s)'>Ver agenda</button><button class="button primary" @onclick='()=>OpenBooking(s)'>Reservar ↗</button></div></div></article>}
+            }
+            else
+            {
+                @if(reservations.Count==0){<EmptyState Icon="▦" Title="Seu calendário está livre." Text="Explore os espaços do clube e planeje seu próximo encontro."/><button class="button primary full" @onclick='()=>reservationTab="spaces"'>Explorar espaços</button>}
+                @foreach(var r in reservations.OrderByDescending(x=>x.Text("inicio")))
+                {
+                    <article class="item-card"><div class="item-top"><span class="badge @(r.Text("status")=="Confirmada"?"good":"neutral")">@r.Text("status")</span><span class="muted">@Money(r.Text("valor"))</span></div><h3>@SpaceName(r.Text("espacoId"))</h3><p>@Date(r.Text("inicio")) → @Date(r.Text("fim"))</p><p>@r.Text("finalidade")</p><p class="subtle">Taxa: @r.Text("statusTaxa")</p>
+                    @if(r.Text("status")=="Confirmada"){
+                        <div class="row-actions wrap"><button class="button secondary" @onclick='()=>OpenGuests(r)'>Convidados</button>
+                        @if(!Api.Dependent && r.Text("statusTaxa")=="EmAberto"){<button class="button secondary" @onclick='()=>Confirm("Quitar taxa?","Esta operação registra um pagamento simulado.",()=>Mutate("/api/reservas/"+r.Text("id")+"/quitar-taxa",new{}))'>Quitar taxa</button><button class="button primary" @onclick='()=>OpenTransfer(r)'>Transferir +10%</button>}
+                        @if(!Api.Dependent){<button class="text-button danger-text" @onclick='()=>Confirm("Cancelar reserva?","O clube calculará a multa ou o reembolso simulado conforme a antecedência.",()=>Mutate("/api/reservas/"+r.Text("id")+"/cancelar",new{}))'>Cancelar</button>}</div>
+                    }</article>
+                }
+            }
+        }
+        else if(page=="courses" || page=="events")
+        {
+            <PageHeading Title="@(page=="courses"?"Atividades":"Agenda de eventos")" Subtitle="Mais encontros. Mais experiências." OnBack='()=>Navigate("home")'/>
+            var list=page=="courses"?courses:events;
+            @if(list.Count==0){<EmptyState Icon="✦" Title="Em breve, novas experiências." Text="As novidades do clube aparecerão aqui."/>}
+            @foreach(var item in list)
+            {
+                <article class="activity-card"><div class="activity-date"><strong>@Day(item.Text("inicio"))</strong><span>@Month(item.Text("inicio"))</span></div><div><p class="eyebrow">@ClubName(item.Text("clubeId"))</p><h3>@item.Text("nome")</h3><p>@item.Text("descricao")</p><p class="subtle">@Date(item.Text("inicio")) · @item.Text("capacidade") vagas</p><div class="row-actions"><button class="button primary" @onclick='()=>Register(item)'>Participar ↗</button><button class="button secondary" @onclick='()=>ViewEnrollment(item)'>Minha inscrição</button></div></div></article>
+            }
+        }
+        else if(page=="invoices")
+        {
+            <PageHeading Title="Meu financeiro" Subtitle="Acompanhe as mensalidades da sua associação." OnBack='()=>Navigate("home")'/><div class="info-box">Todos os pagamentos deste projeto são simulados. Nenhum dinheiro é movimentado.</div>
+            @if(invoices.Count==0){<EmptyState Icon="↔" Title="Tudo tranquilo por aqui." Text="Nenhuma mensalidade cadastrada para sua associação."/>}
+            @foreach(var f in invoices.OrderByDescending(x=>x.Text("competencia"))){<article class="item-card"><div class="item-top"><span class="eyebrow">MENSALIDADE · @f.Text("competencia")</span><span class="badge @(f.Text("status")=="QuitadaSimulada"?"good":"warm")">@(f.Text("status")=="QuitadaSimulada"?"Quitada":"Em aberto")</span></div><h2>@Money(f.Text("valor"))</h2><p>Vencimento @DateOnly(f.Text("vencimento"))</p><div class="row-actions"><button class="button secondary" @onclick='()=>InvoiceDetails(f)'>Ver composição</button>@if(f.Text("status")=="EmAberto"){<button class="button primary" @onclick='()=>Confirm("Quitar mensalidade?","O pagamento será apenas simulado.",()=>Mutate("/api/faturas/"+f.Text("id")+"/quitar",new{}))'>Quitar simulado</button>}</div></article>}
+        }
+        else if(page=="notices")
+        {
+            <PageHeading Title="Mural do clube" Subtitle="As novidades que aproximam a gente." OnBack='()=>Navigate("home")'/>
+            @if(notices.Count==0){<EmptyState Icon="✦" Title="Nenhum aviso por enquanto." Text="Volte em breve para acompanhar as novidades."/>}
+            @foreach(var n in notices){<article class="notice-card"><span class="eyebrow">@ClubName(n.Text("clubeId"))</span><h3>@n.Text("titulo")</h3><p>@n.Text("corpo")</p></article>}
+        }
+        else if(page=="tickets")
+        {
+            <PageHeading Title="Fale com o clube" Subtitle="Sua opinião também faz parte." OnBack='()=>Navigate("home")'/><button class="button primary full" @onclick="OpenTicket">Nova solicitação ou reclamação +</button>
+            @if(tickets.Count==0){<EmptyState Icon="♡" Title="Estamos prontos para ouvir." Text="Abra um atendimento para falar com a administração."/>}
+            @foreach(var t in tickets){<article class="item-card"><div class="item-top"><span class="eyebrow">@t.Text("tipo")</span><span class="badge neutral">@t.Text("status")</span></div><h3>@t.Text("assunto")</h3><p>@t.Text("descricao")</p>@foreach(var answer in t?["respostas"].Array()){<div class="reply"><span>@Date(answer.Text("dataHora"))</span><p>@answer.Text("texto")</p></div>}<button class="button secondary" @onclick='()=>OpenReply(t)'>Adicionar resposta</button></article>}
+        }
+        else if(page=="family")
+        {
+            <PageHeading Title="Minha associação" Subtitle="Seu vínculo e quem compartilha esses momentos." OnBack='()=>Navigate("home")'/>
+            @if(association is not null){<article class="item-card"><span class="eyebrow">@association["clube"].Text("nome")</span><h2>@association["associacao"].Text("categoria")</h2><p>Matrícula @association["associacao"].Text("matricula")</p><p>@association["associacao"].Text("tipoVinculo")</p><span class="badge @(association.Flag("bloqueada")?"danger":"good")">@(!association["associacao"].Flag("ativa")?"Associação inativa":association.Flag("bloqueada")?"Mensalidade fora da tolerância":"Associação regular")</span></article>}
+            @if(!Api.Dependent){<button class="button primary full" @onclick="OpenDependent">Cadastrar dependente +</button>}
+            @foreach(var d in dependents){<article class="item-card"><h3>@d.Text("nome")</h3><p>Usuário: @d.Text("login")</p>@if(!Api.Dependent){<div class="row-actions"><button class="button secondary" @onclick='()=>OpenAuthorization(d)'>Autorizar locação</button><button class="text-button danger-text" @onclick='()=>Confirm("Desvincular dependente?","O vínculo desta pessoa com sua associação será removido.",()=>DeleteDependent(d))'>Desvincular</button></div>}</article>}
+        }
+        else if(page=="profile")
+        {
+            <PageHeading Title="Meu perfil" Subtitle="Seus dados e suas preferências." OnBack='()=>Navigate("home")'/>
+            <div class="profile-hero"><div class="avatar large">@Initials(Api.UserName)</div><h2>@Api.UserName</h2><span class="badge neutral">@(Api.User?["papeis"] is JsonArray rs?string.Join(" · ",rs.Select(x=>x?.ToString())):"")</span></div>
+            <button class="menu-row" @onclick="OpenProfile"><span>✎ Editar meus dados</span><span>→</span></button>
+            @if(!Api.Candidate){<button class="menu-row" @onclick='()=>Navigate("family")'><span>♡ Minha associação</span><span>→</span></button>}
+            <button class="menu-row" @onclick='()=>Navigate("applications")'><span>▤ Meus pedidos de adesão</span><span>→</span></button>
+            <button class="menu-row" @onclick="ClearCache"><span>◌ Limpar dados offline</span><span>→</span></button>
+            <p class="connection-caption">Conectado a @Api.ApiUrl</p>
+            <button class="button secondary full danger-text" @onclick='()=>Confirm("Sair da conta?","O cache local e a sessão deste aparelho serão removidos.",Logout)'>Sair da minha conta</button>
+        }
+        else if(page=="applications")
+        {
+            <PageHeading Title="Meus pedidos" Subtitle="Acompanhe cada etapa da sua adesão." OnBack='()=>Navigate("home")'/>
+            @if(applications.Count==0){<EmptyState Icon="▤" Title="Nenhum pedido por aqui." Text="Sua conta já pode ter sido cadastrada pela administração."/>}
+            @foreach(var a in applications){<article class="item-card"><span class="badge @(a.Text("status")=="Aprovada"?"good":"warm")">@a.Text("status")</span><h3>@a.Text("tipoVinculo")</h3><p>@ClubName(a.Text("clubeId"))</p><p>Enviado em @Date(a.Text("solicitadaEm"))</p><p>@a.Text("motivo")</p>@if(a.Text("status")=="Aprovada"){<div class="info-box">Sua adesão foi aprovada. Saia e entre novamente para atualizar suas permissões.</div>}</article>}
+        }
+        <div class="page-end"><span>ClickClub</span> mais momentos, juntos.</div>
+    </section>
+    <nav class="bottom-nav" aria-label="Navegação principal"><button class="@(page=="home"?"active":"")" @onclick='()=>Navigate("home")'><span>⌂</span>Início</button>@if(!Api.Candidate){<button class="@(page=="reservations"?"active":"")" @onclick='()=>Navigate("reservations")'><span>▦</span>Reservas</button><button class="card-nav @(page=="card"?"active":"")" @onclick='()=>Navigate("card")'><span>▣</span>Carteirinha</button>}<button class="@(page=="notices"?"active":"")" @onclick='()=>Navigate("notices")'><span>✦</span>Mural</button><button class="@(page=="profile"?"active":"")" @onclick='()=>Navigate("profile")'><span>◯</span>Perfil</button></nav>
+}
+@if(modal is not null)
+{
+    <div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-label="@modal"><div class="modal-handle"></div><div class="modal-heading"><h2>@modal</h2><button class="icon-btn" @onclick="CloseModal" aria-label="Fechar">×</button></div>
+    @if(!string.IsNullOrEmpty(modalError)){<div class="alert error" role="alert">@modalError</div>}
+    @if(!string.IsNullOrEmpty(modalInfo)){<div class="info-box">@modalInfo</div>}
+    <form @onsubmit="SaveModal" @onsubmit:preventDefault>
+    @if(modalKind=="booking"){
+        <FormField Label="Data e hora de início" Name="inicio" Type="datetime-local" Values="form" Required="true"/><FormField Label="Data e hora de término" Name="fim" Type="datetime-local" Values="form" Required="true"/><FormField Label="Finalidade do encontro" Name="finalidade" Values="form" Required="true"/><FormField Label="Convidados" Name="convidados" Values="form" Multiline="true" Hint="Uma pessoa por linha: Nome; identificação. A lista só pode ser alterada até 24h antes."/>
+        @if(Api.Dependent){<FormField Label="Autorização do titular" Name="autorizacaoId" Values="form" Options="AuthorizationOptions" Hint="Escolha uma autorização não usada para este espaço. Se não houver, peça ao titular para registrar uma."/>}
+    }
+    else if(modalKind=="agenda"){
+        <FormField Label="Dia para consultar" Name="dia" Type="date" Values="form" Required="true"/>
+        @foreach(var a in agenda){<div class="agenda-slot"><strong>@Date(a.Text("inicio"))</strong><span>até @Date(a.Text("fim")) · @a.Text("finalidade","Reservado")</span></div>}
+        @if(agendaChecked && agenda.Count==0){<p class="muted">Nenhuma reserva confirmada neste dia. A confirmação final depende da API.</p>}
+    }
+    else if(modalKind=="guests"){<FormField Label="Lista de convidados" Name="convidados" Values="form" Multiline="true" Hint="Uma pessoa por linha: Nome; identificação."/>}
+    else if(modalKind=="ticket"){<FormField Label="Tipo de atendimento" Name="tipo" Values="form" Options="TicketOptions" Required="true"/><FormField Label="Assunto" Name="assunto" Values="form" Required="true"/><FormField Label="O que você gostaria de compartilhar?" Name="descricao" Values="form" Multiline="true" Required="true"/>}
+    else if(modalKind=="reply"){<FormField Label="Sua resposta" Name="texto" Values="form" Multiline="true" Required="true"/>}
+    else if(modalKind=="dependent"){<FormField Label="Nome completo" Name="nome" Values="form" Required="true"/><FormField Label="Usuário para o dependente" Name="login" Values="form" Required="true"/><FormField Label="Senha inicial" Name="senha" Type="password" Values="form" Required="true" Hint="Pelo menos 8 caracteres."/><FormField Label="CPF" Name="cpf" Values="form"/><FormField Label="Data de nascimento" Name="dataNascimento" Type="date" Values="form"/>}
+    else if(modalKind=="authorization"){<FormField Label="Espaço autorizado" Name="espacoId" Values="form" Options="SpaceOptions" Required="true"/>}
+    else if(modalKind=="profile"){<FormField Label="CPF" Name="cpf" Values="form"/><FormField Label="Data de nascimento" Name="dataNascimento" Type="date" Values="form"/><FormField Label="E-mail" Name="email" Type="email" Values="form"/><FormField Label="Telefone" Name="telefone" Type="tel" Values="form"/><FormField Label="Endereço" Name="endereco" Values="form"/><FormField Label="Bairro" Name="bairro" Values="form"/><FormField Label="Cidade" Name="cidade" Values="form"/><FormField Label="UF" Name="uf" Values="form"/><FormField Label="Sexo" Name="sexo" Values="form"/><FormField Label="Estado civil" Name="estadoCivil" Values="form"/><FormField Label="Interesses" Name="interesses" Values="form" Hint="Separe por vírgulas: natação, tênis, música."/>}
+    else if(modalKind=="details"){@foreach(var line in detailLines){<div class="detail-line"><span>@line.Value</span><strong>@line.Label</strong></div>}}
+    @if(modalKind!="details"){<button class="button primary full" disabled="@busy" type="submit">@(busy?"Aguarde…":saveLabel)</button>}
+    </form></section></div>
+}
+</main>

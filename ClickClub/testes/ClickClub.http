@@ -1,0 +1,32 @@
+@base = http://localhost:5080
+@token = COLE_O_TOKEN_AQUI
+
+### Saúde
+GET {{base}}/api/saude
+
+### Login
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{"login":"titular","senha":"Teste@123"}
+
+### Sua conta
+GET {{base}}/api/auth/eu
+Authorization: Bearer {{token}}
+
+### Espaços
+GET {{base}}/api/espacos
+Authorization: Bearer {{token}}
+
+### Reserva (substitua as datas por datas futuras com antecedência mínima de 24 horas)
+POST {{base}}/api/reservas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"associacaoId":"22222222-2222-2222-2222-222222222222","espacoId":"33333333-3333-3333-3333-333333333333","inicio":"2030-10-15T18:00:00-03:00","fim":"2030-10-15T22:00:00-03:00","finalidade":"Confraternização"}
+
+### Adesão pública — não cria associação automaticamente
+POST {{base}}/api/adesoes
+Content-Type: application/json
+
+{"clubeId":"11111111-1111-1111-1111-111111111111","nome":"Pessoa de teste","email":"teste@example.com","tipoVinculo":"Convidado"}

@@ -1,0 +1,2 @@
+<div class="page-heading"><button class="back-button" @onclick="OnBack" aria-label="Voltar">←</button><div><h1>@Title</h1><p class="muted">@Subtitle</p></div></div>
+@code{[Parameter]public string Title{get;set;}="";[Parameter]public string Subtitle{get;set;}="";[Parameter]public EventCallback OnBack{get;set;}}

@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+.vs/
+.env
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+*.log
+
+logs/
+**/__pycache__/
+**/*.pyc
+*.sql.backup
+*.keystore
+*.jks
+
+# Build artifacts too large for GitHub
+mobile/apk/*.apk

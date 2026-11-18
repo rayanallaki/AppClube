@@ -1,0 +1,70 @@
+@{
+    var page = ViewBag.Page as string ?? "inicio";
+    var name = User.Identity?.Name ?? "Visitante";
+    var initials = string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => n[0]));
+    var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray();
+    bool Has(params string[] values) => values.Any(User.IsInRole);
+    bool staff = Has("AdministradorGeral", "Presidente", "Funcionario");
+    bool manager = Has("AdministradorGeral", "Presidente");
+    bool member = Has("Titular", "Dependente");
+    var groups = new List<(string Label, List<(string Slug, string Label, string Icon)> Links)>();
+    groups.Add(("Seu clube", new() { ("inicio", "Visão geral", "◫"), ("agenda", "Agenda de espaços", "▦"), ("eventos", "Eventos sociais", "✧"), ("atividades", "Atividades e turmas", "◎"), ("avisos", "Mural de avisos", "☷") }));
+    var personal = new List<(string, string, string)>();
+    if (member) { personal.Add(("carteirinha", "Minha carteirinha", "▤")); personal.Add(("reservas", "Minhas reservas", "⌑")); personal.Add(("associacoes", "Minha associação", "♧")); }
+    if (Has("Titular", "AdministradorGeral", "Presidente", "Tesoureiro")) personal.Add(("financeiro", "Financeiro", "＄"));
+    personal.Add(("chamados", "Ouvidoria", "☏")); personal.Add(("perfil", "Meu cadastro", "○"));
+    if (Has("Candidato")) personal.Add(("adesoes", "Minha solicitação", "▧"));
+    groups.Add(("Sua área", personal));
+    var management = new List<(string, string, string)>();
+    if (staff) { management.Add(("clubes", "Clubes e unidades", "⌂"));  management.Add(("espacos", "Espaços e horários", "▥")); }
+    if (manager) { management.Add(("pessoas", "Pessoas e equipe", "♙")); management.Add(("associacoes", "Associações", "♧")); management.Add(("adesoes", "Aprovar adesões", "✓")); }
+    if (staff) management.Add(("reservas", "Reservas do clube", "⌑"));
+    if (Has("AdministradorGeral")) management.Add(("categorias", "Categorias", "◇"));
+    if (Has("AdministradorGeral", "Porteiro")) management.Add(("portaria", "Portaria online", "⇥"));
+    if (Has("AdministradorGeral", "Presidente", "Tesoureiro", "Funcionario")) management.Add(("relatorios", "Relatórios", "▤"));
+    if (Has("AdministradorGeral")) management.Add(("auditoria", "Auditoria", "☷"));
+    if (management.Count > 0) groups.Add(("Administração", management));
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102d35" />
+    <title>@ViewData["Title"] · ClickClub</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+<div class="app-shell">
+    <aside class="sidebar" aria-label="Menu principal">
+        <a class="brand" href="/painel"><span class="brand-mark">c</span><span>clickclub<small>Viva o seu clube</small></span></a>
+        <nav>
+        @foreach (var group in groups)
+        {
+            <div class="nav-group"><span>@group.Label</span>
+            @foreach (var link in group.Links)
+            {
+                <a class="nav-link @(page == link.Slug ? "active" : "")" href="/painel/@link.Slug" aria-current="@(page == link.Slug ? "page" : null)"><span aria-hidden="true">@link.Icon</span>@link.Label</a>
+            }
+            </div>
+        }
+        </nav>
+        <div class="user-card"><span class="avatar">@initials</span><div><p>@name</p><small>@string.Join(" · ", roles.Select(r => r == "AdministradorGeral" ? "Administrador geral" : r == "Funcionario" ? "Funcionário" : r))</small></div></div>
+    </aside>
+    <main class="main" id="conteudo">
+        <header class="topbar">
+            <button type="button" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+            <div class="breadcrumbs">ClickClub <span aria-hidden="true"> / </span> <strong>@ViewData["Title"]</strong></div>
+            <div class="topbar-meta"><span class="chip"><span class="status-dot"></span>Ambiente acadêmico</span><form method="post" action="/conta/sair" class="inline-form">@Html.AntiForgeryToken()<button class="button secondary small" type="submit">Sair</button></form></div>
+        </header>
+        @if (TempData["success"] is string success) { <div class="alert success" role="status">@success</div> }
+        @if (TempData["error"] is string error) { <div class="alert error" role="alert">@error</div> }
+        @RenderBody()
+        <footer class="footer-note">ClickClub · Um lugar para conviver, praticar e pertencer.<br />Pagamentos e controle de portaria simulados para apresentação acadêmica.</footer>
+    </main>
+</div>
+<script src="~/js/site.js" asp-append-version="true" defer></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

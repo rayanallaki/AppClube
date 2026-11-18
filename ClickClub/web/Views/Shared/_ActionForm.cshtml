@@ -1,0 +1,44 @@
+@model ActionForm
+@{
+    var prefix = "form-" + Guid.NewGuid().ToString("N")[..8];
+    var hasFields = Model.Fields?.Count > 0;
+}
+<form method="post" action="/painel/executar" class="@(hasFields ? "action-form" : "inline-form")" data-confirm="@Model.Confirm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="operation" value="@Model.Operation" />
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" name="page" value="@(ViewBag.Page as string ?? "inicio")" />
+    @if (Model.Hidden is not null)
+    {
+        foreach (var item in Model.Hidden) { <input type="hidden" name="@item.Key" value="@item.Value" /> }
+    }
+    @if (hasFields)
+    {
+        <div class="form-grid">
+        @foreach (var field in Model.Fields!)
+        {
+            var fieldId = prefix + "-" + field.Name;
+            if (field.Type == "hidden") { <input type="hidden" name="@field.Name" value="@field.Value" /> continue; }
+            if (field.Type == "checkbox")
+            {
+                <div class="field checkbox"><input id="@fieldId" type="checkbox" name="@field.Name" value="true" checked="@(field.Value == "true")" /><input type="hidden" name="@field.Name" value="false" /><label for="@fieldId">@field.Label</label></div>
+                continue;
+            }
+            <div class="field @(field.Type == "textarea" ? "full" : "")">
+                <label for="@fieldId">@field.Label @if (field.Required) { <span aria-hidden="true">*</span> }</label>
+                @if (field.Type == "select")
+                {
+                    <select id="@fieldId" name="@field.Name" required="@field.Required">
+                    @if (!field.Required) { <option value="">Selecione, se necessário</option> }
+                    @foreach (var option in field.Options ?? []) { <option value="@option.Value" selected="@(option.Value == field.Value)">@option.Text</option> }
+                    </select>
+                }
+                else if (field.Type == "textarea") { <textarea id="@fieldId" name="@field.Name" rows="3" required="@field.Required">@field.Value</textarea> }
+                else { <input id="@fieldId" name="@field.Name" type="@field.Type" value="@field.Value" required="@field.Required" step="@(field.Type == "number" ? "0.01" : null)" autocomplete="@(field.Type == "password" ? "new-password" : null)" /> }
+                @if (!string.IsNullOrWhiteSpace(field.Hint)) { <small>@field.Hint</small> }
+            </div>
+        }
+        </div>
+    }
+    <div class="@(hasFields ? "actions" : "")"><button type="submit" class="button @Model.Style @(!hasFields ? "small" : "")">@Model.Label</button></div>
+</form>

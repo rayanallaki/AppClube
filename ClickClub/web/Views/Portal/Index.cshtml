@@ -1,0 +1,91 @@
+@model PortalModel
+@using System.Globalization
+@{
+    ViewData["Title"] = Model.Title;
+    ViewBag.Page = Model.Page;
+    var pt = CultureInfo.GetCultureInfo("pt-BR");
+}
+<div class="page-header"><div><p class="eyebrow">@(Model.Page == "inicio" ? "Sua comunidade, mais perto" : "ClickClub · Área do clube")</p><h1 class="page-title">@Model.Title</h1><p class="page-description">@Model.Description</p></div><a class="button secondary" href="/painel/@Model.Page">↻ Atualizar</a></div>
+@if (Model.Page == "inicio")
+{
+    <section class="welcome-banner"><div><p class="section-kicker">Mais do que um clube</p><h2>Seu próximo encontro começa aqui.</h2><p>Espaços para reunir a família, atividades para se movimentar e uma comunidade para fazer parte.</p></div><a class="button" href="/painel/agenda">Explorar a agenda <span aria-hidden="true">↗</span></a></section>
+}
+@if (Model.Stats.Count > 0)
+{
+    <div class="stats-grid">@foreach (var stat in Model.Stats) { <article class="stat-card @(stat.Tone == "navy" ? "featured" : "")"><div class="stat-label">@stat.Label<span class="icon" aria-hidden="true">↗</span></div><div class="stat-number">@stat.Value</div><div class="stat-note">@stat.Note</div></article> }</div>
+}
+@if (!string.IsNullOrWhiteSpace(Model.QrSvg))
+{
+    <section class="qr-card" aria-label="Carteirinha de associado"><div class="card-banner"><p class="eyebrow">ClickClub · Carteirinha digital</p><h2>@Model.CardName</h2><p>Seu clube vai com você.</p></div>@Html.Raw(Model.QrSvg)<div class="qr-content"><span class="badge success">Credencial emitida</span><p class="mt-2"><strong>@Model.CardExpiry</strong></p><small>A portaria consulta a situação atual na API antes de autorizar a entrada.</small><details><summary>Exibir código para conferência</summary><code class="credential">@Model.CardCredential</code></details></div><div class="status-bar">Apresente este QR Code na portaria do clube</div></section>
+}
+@if (Model.CalendarMonth is DateTime month)
+{
+    var first = new DateTime(month.Year, month.Month, 1);
+    var start = first.AddDays(-(((int)first.DayOfWeek + 6) % 7));
+    var last = first.AddMonths(1).AddDays(-1);
+    var totalDays = (int)Math.Ceiling(((last - start).Days + 1) / 7d) * 7;
+    <section class="panel"><div class="panel-header"><div><h2>@pt.TextInfo.ToTitleCase(first.ToString("MMMM yyyy", pt))</h2><p>As reservas que atravessam datas aparecem em cada dia ocupado.</p></div><div class="actions flush"><a class="button secondary small" href="/painel/agenda?espacoId=@Model.CalendarSpace&mes=@first.AddMonths(-1).ToString("yyyy-MM")" aria-label="Mês anterior">←</a><a class="button secondary small" href="/painel/agenda?espacoId=@Model.CalendarSpace&mes=@first.AddMonths(1).ToString("yyyy-MM")" aria-label="Próximo mês">→</a></div></div><div class="table-wrap"><div class="calendar" style="min-width:580px">
+    @foreach (var dayName in new[] { "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" }) { <div class="calendar-head">@dayName</div> }
+    @for (var n = 0; n < totalDays; n++)
+    {
+        var day = start.AddDays(n);
+        <div class="calendar-day @(day.Month != month.Month ? "outside" : "") @(day.Date == DateTime.Today ? "today" : "")"><span class="date">@day.Day</span>
+        @foreach (var entry in Model.CalendarEvents)
+        {
+            if (DateTimeOffset.TryParse(entry["inicio"]?.ToString(), out var begins) && DateTimeOffset.TryParse(entry["fim"]?.ToString(), out var ends))
+            {
+                var localStart = TimeZoneInfo.ConvertTime(begins, TimeZoneInfo.FindSystemTimeZoneById(Model.CalendarTimeZone)).DateTime;
+                var localEnd = TimeZoneInfo.ConvertTime(ends, TimeZoneInfo.FindSystemTimeZoneById(Model.CalendarTimeZone)).DateTime;
+                if (localStart < day.AddDays(1) && localEnd > day)
+                {
+                    <div class="calendar-event"><strong>@(localStart.Date < day ? "Em andamento" : localStart.ToString("HH:mm")) – @(localEnd.Date > day ? "continua" : localEnd.ToString("HH:mm"))</strong>@PortalModel.Text(entry, "finalidade", "Espaço reservado")</div>
+                }
+            }
+        }
+        </div>
+    }
+    </div></div><div class="calendar-legend"><span>● Ocupação confirmada</span><span>Horários da unidade: @Model.CalendarTimeZone.</span></div></section>
+}
+@foreach (var area in Model.Sections)
+{
+    <section class="panel"><div class="panel-header"><div><h2>@area.Title</h2>@if (!string.IsNullOrWhiteSpace(area.Description)) { <p>@area.Description</p> }</div></div>
+    @if (area.Table is Table table)
+    {
+        if (table.Rows.Count == 0) { <div class="empty-state"><span class="empty-icon" aria-hidden="true">◇</span><h3>Nada por aqui, por enquanto</h3><p>Os registros aparecerão nesta área assim que forem cadastrados.</p></div> }
+        else
+        {
+            bool hasActions = table.Rows.Any(r => r.Actions?.Count > 0 || r.Link is not null);
+            <div class="table-wrap"><table class="data-table"><thead><tr>@foreach (var header in table.Headers) { <th scope="col">@header</th> }@if (hasActions) { <th scope="col">Ações</th> }</tr></thead><tbody>
+            @foreach (var row in table.Rows)
+            {
+                <tr>@foreach (var cell in row.Cells) { <td>@if (cell.Tone is not null) { <span class="badge @cell.Tone">@cell.Text</span> } else { @cell.Text }</td> }
+                @if (hasActions)
+                {
+                    <td><div class="actions flush">@if (row.Link is not null) { <a href="@row.Link" class="button secondary small">@(row.LinkLabel ?? "Detalhes") <span aria-hidden="true">↗</span></a> }
+                    @foreach (var action in row.Actions ?? [])
+                    {
+                        if (action.Fields?.Count > 0) { <details><summary>@action.Label</summary><partial name="_ActionForm" model="action" /></details> }
+                        else { <partial name="_ActionForm" model="action" /> }
+                    }
+                    </div></td>
+                }
+                </tr>
+            }
+            </tbody></table></div>
+        }
+    }
+    @if (area.Forms?.Count > 0)
+    {
+        <div class="panel-body">
+        @foreach (var form in area.Forms)
+        {
+            if (form.Fields?.Count > 0)
+            {
+                <details open="@(area.Forms.Count == 1 && area.Table is null)"><summary>@form.Label</summary><partial name="_ActionForm" model="form" /></details>
+            }
+            else { <partial name="_ActionForm" model="form" /> }
+        }
+        </div>
+    }
+    </section>
+}

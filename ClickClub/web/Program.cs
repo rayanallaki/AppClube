@@ -1,0 +1,15 @@
+using ClickClub.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews(o=>o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(o=>{o.IdleTimeout=TimeSpan.FromHours(8);o.Cookie.Name="ClickClub.Session";o.Cookie.HttpOnly=true;o.Cookie.IsEssential=true;o.Cookie.SameSite=SameSiteMode.Lax;});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o=>{o.LoginPath="/conta/entrar";o.AccessDeniedPath="/conta/negado";o.Cookie.Name="ClickClub.Web";o.Cookie.HttpOnly=true;o.Cookie.SameSite=SameSiteMode.Lax;o.ExpireTimeSpan=TimeSpan.FromHours(8);o.SlidingExpiration=false;});
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient<ApiClient>((sp,c)=>{c.BaseAddress=new Uri(builder.Configuration["Api:BaseUrl"]??"http://localhost:5080/");c.Timeout=TimeSpan.FromSeconds(35);});
+var app=builder.Build();
+app.UseExceptionHandler("/conta/erro");
+app.UseStaticFiles();app.UseRouting();app.UseSession();app.UseAuthentication();app.UseAuthorization();
+app.MapControllerRoute("default","{controller=Portal}/{action=Index}/{id?}");
+app.Run();

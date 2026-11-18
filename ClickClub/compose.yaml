@@ -1,0 +1,22 @@
+name: clickclub
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: clickclub_dev
+      MYSQL_USER: clickclub
+      MYSQL_PASSWORD: ${CLICKCLUB_MYSQL_PASSWORD:?Defina CLICKCLUB_MYSQL_PASSWORD no arquivo .env local}
+      MYSQL_ROOT_PASSWORD: ${CLICKCLUB_MYSQL_ROOT_PASSWORD:?Defina CLICKCLUB_MYSQL_ROOT_PASSWORD no arquivo .env local}
+    ports:
+      - "127.0.0.1:${CLICKCLUB_MYSQL_PORT:-3306}:3306"
+    volumes:
+      - clickclub_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysqladmin ping -u clickclub --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+volumes:
+  clickclub_mysql:

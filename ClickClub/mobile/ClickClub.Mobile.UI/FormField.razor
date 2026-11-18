@@ -1,0 +1,29 @@
+<label class="field"><span>@Label @if(Required){<b aria-label="obrigatório">*</b>}</span>
+@if(Options is not null)
+{
+    <select value="@Value" @onchange="Changed" required="@Required"><option value="">Selecione</option>@foreach(var item in Options){<option value="@item.Value">@item.Label</option>}</select>
+}
+else if(Multiline)
+{
+    <textarea @onchange="Changed" rows="3" required="@Required" placeholder="@Placeholder">@Value</textarea>
+}
+else
+{
+    <input type="@Type" value="@Value" @onchange="Changed" required="@Required" placeholder="@Placeholder" autocomplete="@Autocomplete" />
+}
+@if(!string.IsNullOrEmpty(Hint)){<small>@Hint</small>}
+</label>
+@code{
+    [Parameter] public string Label {get;set;}="";
+    [Parameter] public string Name {get;set;}="";
+    [Parameter] public Dictionary<string,string> Values {get;set;}=new();
+    [Parameter] public string Type {get;set;}="text";
+    [Parameter] public string Placeholder {get;set;}="";
+    [Parameter] public string Hint {get;set;}="";
+    [Parameter] public string Autocomplete {get;set;}="off";
+    [Parameter] public bool Required {get;set;}
+    [Parameter] public bool Multiline {get;set;}
+    [Parameter] public IReadOnlyList<Choice>? Options {get;set;}
+    string Value=>Values.GetValueOrDefault(Name,"");
+    void Changed(ChangeEventArgs e)=>Values[Name]=e.Value?.ToString()??"";
+}

@@ -1,0 +1,15 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#102d35" /><title>Entre no seu clube · ClickClub</title><link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /></head><body>
+<main class="login-shell">
+    <section class="login-aside"><a class="brand" href="/conta/entrar"><span class="brand-mark">c</span><span>clickclub<small>Viva o seu clube</small></span></a><div class="hero"><span class="chip">CONEXÕES QUE FAZEM BEM</span><h1>Mais encontros.<br />Mais movimento.<br /><em>Mais vida no clube.</em></h1><p>A sua comunidade em um só lugar. Reserve momentos, descubra atividades e aproveite tudo que o clube tem para oferecer.</p><div class="feature-grid"><div class="feature-item"><strong>Espaços para compartilhar</strong><span>Encontros que viram boas memórias.</span></div><div class="feature-item"><strong>Uma comunidade ativa</strong><span>Esporte, lazer e novas conexões.</span></div></div></div><footer>ClickClub · Gestão integrada de clubes e associados</footer></section>
+    <section class="login-card" aria-labelledby="login-title"><p class="eyebrow">É bom ter você aqui</p><h1 id="login-title">Entre no seu clube.</h1><p>Acesse sua conta para acompanhar tudo que acontece.</p>
+    @if (ViewBag.Error is string error) { <div class="alert error" role="alert">@error</div> }
+    @if (TempData["error"] is string tempError) { <div class="alert error" role="alert">@tempError</div> }
+    @if (TempData["success"] is string success) { <div class="alert success" role="status">@success</div> }
+    <form method="post" action="/conta/entrar">@Html.AntiForgeryToken()<div class="field"><label for="login">Usuário</label><input id="login" name="login" value="@ViewBag.Login" autocomplete="username" required autofocus placeholder="Seu nome de usuário" /></div><div class="field"><label for="senha">Senha</label><input id="senha" name="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha" /></div><button class="button primary" type="submit">Entrar na minha conta <span aria-hidden="true">→</span></button></form>
+    <p class="login-footnote">Ainda não faz parte? <a href="/conta/adesao">Solicite sua adesão</a><br />Uma solicitação será analisada pela administração do clube.</p>
+    <details><summary>Contas para apresentação acadêmica</summary><p class="text-small">Se a população de demonstração estiver habilitada, use uma das contas abaixo com a senha <code>Teste@123</code>.</p><div class="demo-accounts"><code>admin</code><code>presidente</code><code>tesoureiro</code><code>funcionario</code><code>porteiro</code><code>titular</code><code>dependente</code></div><p class="text-small mt-2">São contas fictícias de demonstração. Ações financeiras e portaria são simuladas.</p></details>
+    </section>
+</main><script src="~/js/site.js" asp-append-version="true" defer></script></body></html>
