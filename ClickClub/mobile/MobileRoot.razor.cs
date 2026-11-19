@@ -1,9 +1,8 @@
 using System.Globalization;
 using System.Text.Json.Nodes;
-using ClickClub.Mobile.Core;
 using Microsoft.AspNetCore.Components;
 
-namespace ClickClub.Mobile.UI;
+namespace ClickClub.Mobile;
 
 public partial class MobileRoot
 {

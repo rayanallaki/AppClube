@@ -24,8 +24,8 @@ Os nomes de tela podem ser agrupados nos menus de gestão e serviços.
 
 ## Critérios que precisam do ensaio local
 
-- Android físico: instalação, câmera quando utilizada, permissões,
-  SecureStorage, cache SQLite e exibição offline da credencial.
+- Mobile MAUI no Windows: sessão no SecureStorage, exibição da carteirinha
+  com dados do clube e uso do cache SQLite sem conexão.
 - Windows/Workbench do usuário: conexão local, credenciais, firewall e
   inicialização dos projetos nos SDKs instalados.
 - Toda a matriz T01–T41, carga alta e falhas de rede durante confirmação de

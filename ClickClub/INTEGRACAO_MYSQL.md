@@ -7,9 +7,10 @@ A Web e o aplicativo Mobile acessam a API; o SQLite do app é um cache local, n�
 ## 1. Preparar um banco novo no Workbench
 
 Abra a conexão local que você já usa. Anote o hostname e a porta exibidos na
-conexão (normalmente `localhost` e `3306`). Execute o arquivo
-`banco/001_criar_banco.sql` em uma aba SQL. Ele cria `clickclub_dev` se ainda
-não existir e não apaga dados.
+conexão (normalmente `localhost` e `3306`). Em uma aba SQL, execute o
+`CREATE DATABASE IF NOT EXISTS` de `banco/001_criar_banco.sql` para criar
+`clickclub_dev`. Para um notebook com MySQL recém-instalado, crie o usuário
+e conceda as permissões pelo Workbench, como descrito abaixo.
 
 Em **Administration → Users and Privileges**, crie o usuário local `clickclub`,
 defina sua própria senha e conceda permissões sobre **somente** `clickclub_dev`
@@ -24,9 +25,9 @@ testar esta versão.
 
 ## 2. Abrir esta versão no VS Code
 
-Extraia o ZIP em uma pasta nova e abra a pasta `ClickClub` no VS Code.
-Confira o SDK com `dotnet --version` no terminal: este projeto usa .NET 8.
-O SDK pode ser instalado em https://dotnet.microsoft.com/download/dotnet/8.0.
+Abra a pasta `ClickClub` no VS Code. Para executar API e Web, instale o
+ASP.NET Core Runtime 8. Para compilar todos os projetos e abrir o Mobile,
+use também o SDK .NET 10 conforme o [guia do Mobile](mobile/README.md).
 
 No terminal **PowerShell**, dentro de `ClickClub`, execute:
 

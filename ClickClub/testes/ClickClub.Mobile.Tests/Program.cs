@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
 using System.Text.Json.Nodes;
-using ClickClub.Mobile.Core;
+using ClickClub.Mobile;
 using SQLite;
 
-var directory=Path.Combine(Path.GetTempPath(),"clickclub-mobile-tests-"+Guid.NewGuid().ToString("N"));
+var directory=Path.Combine(args.Length > 0 ? Path.GetFullPath(args[0]) : Path.GetTempPath(),"clickclub-mobile-tests-"+Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(directory);
 var database=Path.Combine(directory,"cache.db3");
 var secret=new TestStorage();

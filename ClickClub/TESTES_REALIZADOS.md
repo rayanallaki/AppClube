@@ -1,4 +1,20 @@
-# Testes da entrega API, Web e Android — 11/11/2026
+# Testes do ClickClub
+
+## Mobile MAUI para Windows — 19/11/2026
+
+- `ClickClub.sln` compilada no Windows com .NET SDK 10.0.302, com zero erros
+  e zero avisos.
+- Janela aberta pelo `dotnet run`. O WebView exibiu o login com estilos locais
+  e texto em português. O formulário de adesão carregou os clubes da API.
+- 14 cenários automatizados do cliente com SQLite real e HTTP simulado.
+- 14 cenários da suíte HTTP, incluindo reinício da API, em um MySQL isolado
+  para testes.
+- `compileall` e `git diff --check` concluídos. Evidências em `tmp_tests`.
+
+## Registro da edição Android — 11/11/2026
+
+> Registro histórico da edição Android. Para executar a edição atual do
+> mobile, consulte [MAUI para Windows](mobile/README.md).
 
 ## Compilações observadas
 

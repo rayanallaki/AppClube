@@ -51,7 +51,7 @@ try {
     if (-not $webPronta) { throw 'A Web nao respondeu. Confira logs/web.log.' }
     Write-Host "Web: http://localhost:$PortaWeb"
     Write-Host "API: http://localhost:$PortaApi/api/saude"
-    if ($RedeLocal) { Write-Host 'API acessivel na rede local. No Android fisico, configure http://IP-DO-COMPUTADOR:5080/ com a porta escolhida.' }
+    Write-Host "Servidor do Mobile: http://localhost:$PortaApi/"
     if (-not $NaoAbrirNavegador) { Start-Process "http://localhost:$PortaWeb" }
     Read-Host 'Pressione Enter para encerrar API e Web' | Out-Null
 } finally {

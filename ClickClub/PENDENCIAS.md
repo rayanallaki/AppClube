@@ -9,14 +9,14 @@ preserva decisões históricas; ela não substitui o registro de testes atual.
 
 - Configurar a conexão MySQL local com o script e conferir o servidor/porta.
 - Repetir o início da API e Web no Windows e ensaiar os perfis do roteiro.
-- Compilar/instalar o app no telefone escolhido, configurar a rede e verificar
-  câmera, SecureStorage, SQLite e validade da carteirinha sem conexão.
-- Confirmar que as portas e os SDKs do telefone/emulador estão disponíveis.
+- Abrir o app MAUI no Windows e verificar a sessão, o cache SQLite e a validade
+  da carteirinha sem conexão com a API de teste.
+- Confirmar as portas locais e os pré-requisitos do
+  [Mobile para Windows](mobile/README.md).
 - Fazer backup do banco e preservar a chave de assinatura de carteirinhas.
 
-Essas ações dependem do ambiente do usuário. O chat não acessou seu VS Code,
-seu MySQL nem seu telefone. O resultado observado neste ambiente fica no
-registro de testes, incluindo a evidência real de compilação Android.
+Essas verificações devem ser repetidas no notebook da apresentação. Os
+resultados observados no Windows estão em [TESTES_REALIZADOS.md](TESTES_REALIZADOS.md).
 
 ## Escala e implantação
 
@@ -41,4 +41,4 @@ entrega. Uma imagem QR em cache não equivale a autorização de entrada.
 
 Os limites acima não são uma declaração de execução integral de todos os
 cenários T01–T41. Consulte quais fluxos foram efetivamente verificados em
-`TESTES_REALIZADOS.md` e repita os dependentes de Android físico no ensaio.
+`TESTES_REALIZADOS.md` e repita o ensaio com o aplicativo MAUI para Windows.

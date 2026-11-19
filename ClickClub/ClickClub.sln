@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -7,17 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Api", "api\ClickC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Web", "web\ClickClub.Web.csproj", "{0A3958FC-815F-4642-B981-92AD8E72082B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mobile", "mobile", "{1299C51A-310B-4C6D-B193-84FAF9D2BEB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Tests", "testes\ClickClub.Mobile.Tests\ClickClub.Mobile.Tests.csproj", "{2C80574A-35C2-4E16-BC76-E76E95BB6FFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Core", "mobile\ClickClub.Mobile.Core\ClickClub.Mobile.Core.csproj", "{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.UI", "mobile\ClickClub.Mobile.UI\ClickClub.Mobile.UI.csproj", "{2B3BB9D4-26BC-435A-A403-B6440831CC23}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Preview", "mobile\Preview\ClickClub.Mobile.Preview.csproj", "{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Tests", "mobile\Tests\ClickClub.Mobile.Tests.csproj", "{2C80574A-35C2-4E16-BC76-E76E95BB6FFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile", "mobile\ClickClub.Mobile\ClickClub.Mobile.csproj", "{53058D71-C177-4928-81A7-F42A657A0FFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile", "mobile\ClickClub.Mobile.csproj", "{53058D71-C177-4928-81A7-F42A657A0FFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,18 +28,6 @@ Global
 		{0A3958FC-815F-4642-B981-92AD8E72082B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A3958FC-815F-4642-B981-92AD8E72082B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A3958FC-815F-4642-B981-92AD8E72082B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B3BB9D4-26BC-435A-A403-B6440831CC23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B3BB9D4-26BC-435A-A403-B6440831CC23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B3BB9D4-26BC-435A-A403-B6440831CC23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B3BB9D4-26BC-435A-A403-B6440831CC23}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C80574A-35C2-4E16-BC76-E76E95BB6FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C80574A-35C2-4E16-BC76-E76E95BB6FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C80574A-35C2-4E16-BC76-E76E95BB6FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,12 +36,5 @@ Global
 		{53058D71-C177-4928-81A7-F42A657A0FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53058D71-C177-4928-81A7-F42A657A0FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53058D71-C177-4928-81A7-F42A657A0FFE}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{76D1C1D9-0D02-4F13-9A7A-9FE173F6CB3F} = {1299C51A-310B-4C6D-B193-84FAF9D2BEB2}
-		{2B3BB9D4-26BC-435A-A403-B6440831CC23} = {1299C51A-310B-4C6D-B193-84FAF9D2BEB2}
-		{A6282CF7-B57F-4067-B9A3-7CAD74DB5D41} = {1299C51A-310B-4C6D-B193-84FAF9D2BEB2}
-		{2C80574A-35C2-4E16-BC76-E76E95BB6FFC} = {1299C51A-310B-4C6D-B193-84FAF9D2BEB2}
-		{53058D71-C177-4928-81A7-F42A657A0FFE} = {1299C51A-310B-4C6D-B193-84FAF9D2BEB2}
 	EndGlobalSection
 EndGlobal

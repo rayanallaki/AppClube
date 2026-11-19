@@ -1,7 +1,7 @@
 # Roteiro de apresentação — ClickClub
 
-Tempo sugerido: 10 a 15 minutos. Faça um ensaio completo no mesmo computador
-e telefone que usará na apresentação. Mantenha MySQL, API e Web ligados e
+Tempo sugerido: 10 a 15 minutos. Faça um ensaio completo no notebook
+que usará na apresentação. Mantenha MySQL, API e Web ligados e
 use somente dados fictícios. O roteiro descreve o que demonstrar; consulte o
 registro de testes para distinguir os cenários já executados neste ambiente.
 
@@ -9,7 +9,8 @@ registro de testes para distinguir os cenários já executados neste ambiente.
 
 - Abra `README.md` e execute a configuração do banco e o script de início.
 - Confira a Web em `http://localhost:5081` e a saúde da API na porta 5080.
-- Tenha um telefone/emulador com o app instalado e a URL da API configurada.
+- Abra o Mobile na janela do Windows com `dotnet run` na pasta `mobile`.
+  Confira se o servidor cadastrado no app é `http://localhost:5080/`.
 - Confira que as categorias têm preço e limites coerentes para o exemplo.
 - Não execute repetidamente os testes sobre o banco da apresentação: os
   dados agora permanecem após o reinício.
@@ -39,7 +40,7 @@ pela administração ou pela área do titular antes de demonstrar seus serviços
 ## 1. Explicar a arquitetura — 1 minuto
 
 “A Web e o app conversam com a API. A API confere permissões e regras e
-grava no MySQL. O SQLite no Android guarda apenas o cache necessário para
+grava no MySQL. O SQLite no aplicativo MAUI guarda apenas o cache necessário para
 consulta e a última carteirinha, enquanto a decisão da portaria é online.”
 
 Mostre as três pastas do projeto. Explique que categoria (Familiar,
@@ -68,16 +69,16 @@ de acréscimo. Confirme uma vez e consulte os itens. Repita a ação para mostra
 que não duplica a cobrança. Cancele no prazo e confira o ajuste na fatura.
 Explique que todos os valores e pagamentos são simulados.
 
-## 5. Android e carteirinha — 2 minutos
+## 5. Mobile para Windows e carteirinha — 2 minutos
 
-Mostre o login no app, a carteirinha com QR e o horário de validade. Desative
-a rede do telefone e abra a carteirinha previamente guardada em SQLite.
+Mostre o login no app, a carteirinha com QR e o horário de validade. Pare a
+API de teste e abra a carteirinha previamente guardada em SQLite.
 Mostre que o app diferencia dados em cache e credencial expirada. Na Web,
-entre como porteiro e valide uma credencial pela API, exibindo permitido ou
+reinicie a API, entre como porteiro e valide a credencial, exibindo permitido ou
 negado e o motivo. A credencial é diferente do token de login.
 
 Não diga que o modo offline libera acesso. Quando a API está indisponível,
-a portaria não autoriza automaticamente. Reative a rede ao concluir o exemplo.
+a portaria não autoriza automaticamente.
 
 ## 6. Turmas, eventos e atendimento — 2 minutos
 

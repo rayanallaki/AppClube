@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -6,16 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Api", "api\ClickClub.Api.csproj", "{F2C4BB63-718E-487D-80C2-5A46941E504C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Web", "web\ClickClub.Web.csproj", "{B2339079-30AA-495A-98EA-DC6A1E1B1410}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mobile", "mobile", "{3F7B9E65-CD39-4A63-8468-E18AE32A7F75}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Core", "mobile\ClickClub.Mobile.Core\ClickClub.Mobile.Core.csproj", "{F3450A1D-9182-4BDF-91D7-596B1AF090A2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.UI", "mobile\ClickClub.Mobile.UI\ClickClub.Mobile.UI.csproj", "{E9E79377-794F-4A64-9C5F-87F9279F2403}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Preview", "mobile\Preview\ClickClub.Mobile.Preview.csproj", "{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickClub.Mobile.Tests", "mobile\Tests\ClickClub.Mobile.Tests.csproj", "{F130DAEA-F8F4-4677-A9EC-F0A379A00A65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,27 +24,5 @@ Global
 		{B2339079-30AA-495A-98EA-DC6A1E1B1410}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2339079-30AA-495A-98EA-DC6A1E1B1410}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2339079-30AA-495A-98EA-DC6A1E1B1410}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3450A1D-9182-4BDF-91D7-596B1AF090A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3450A1D-9182-4BDF-91D7-596B1AF090A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3450A1D-9182-4BDF-91D7-596B1AF090A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3450A1D-9182-4BDF-91D7-596B1AF090A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9E79377-794F-4A64-9C5F-87F9279F2403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9E79377-794F-4A64-9C5F-87F9279F2403}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9E79377-794F-4A64-9C5F-87F9279F2403}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9E79377-794F-4A64-9C5F-87F9279F2403}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F130DAEA-F8F4-4677-A9EC-F0A379A00A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F130DAEA-F8F4-4677-A9EC-F0A379A00A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F130DAEA-F8F4-4677-A9EC-F0A379A00A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F130DAEA-F8F4-4677-A9EC-F0A379A00A65}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F3450A1D-9182-4BDF-91D7-596B1AF090A2} = {3F7B9E65-CD39-4A63-8468-E18AE32A7F75}
-		{E9E79377-794F-4A64-9C5F-87F9279F2403} = {3F7B9E65-CD39-4A63-8468-E18AE32A7F75}
-		{A351D3EB-C07E-4CC3-A4A4-F95F8A18C713} = {3F7B9E65-CD39-4A63-8468-E18AE32A7F75}
-		{F130DAEA-F8F4-4677-A9EC-F0A379A00A65} = {3F7B9E65-CD39-4A63-8468-E18AE32A7F75}
 	EndGlobalSection
 EndGlobal

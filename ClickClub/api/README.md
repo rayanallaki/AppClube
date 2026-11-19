@@ -1,6 +1,6 @@
 # ClickClub API
 
-ASP.NET Core 8 + Entity Framework Core 8 + Pomelo/MySQL. Web e Android só
+ASP.NET Core 8 + Entity Framework Core 8 + Pomelo/MySQL. Web e Mobile só
 consomem esta API. O banco central, autorizações, auditoria e decisões de
 portaria permanecem no servidor. Operações financeiras são simuladas.
 
@@ -14,10 +14,8 @@ $env:ASPNETCORE_ENVIRONMENT = "Development"
 dotnet run --urls http://localhost:5080
 ```
 
-Para Android físico na mesma rede, utilize o script de início da solução com
-a opção de rede local. A API precisa escutar o endereço de rede e o firewall
-do computador deve permitir a porta escolhida. Não use as contas de teste em
-uma API pública.
+O aplicativo MAUI para Windows usa `http://localhost:5080/` por padrão.
+O endereço pode ser alterado na engrenagem da tela de login.
 
 - Saúde: `/api/saude`
 - Documentação interativa em Development: `/swagger`
@@ -40,7 +38,7 @@ somente uma vez, em um banco vazio com população de demonstração habilitada.
   com acréscimo único de 10%, cancelamento e créditos simulados.
 - Turmas, aulas, capacidade, lista de espera e promoção manual; eventos e
   visitantes; avisos e ouvidoria com respostas e estado.
-- Carteirinha com texto assinado, PNG e SVG. O Android pode guardar e exibir
+- Carteirinha com texto assinado, PNG e SVG. O Mobile pode guardar e exibir
   a credencial até expirar; a portaria confirma a situação online na API.
 - Painel, relatórios por unidade/período e trilha de auditoria.
 

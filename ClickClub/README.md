@@ -1,15 +1,20 @@
-# ClickClub — API, Web e Android
+# ClickClub — API, Web e MAUI para Windows
 
 Projeto acadêmico de gestão de clubes com **API ASP.NET Core 8 + MySQL**,
-**Web ASP.NET Core MVC** e **aplicativo Android .NET MAUI com SQLite local**.
+**Web ASP.NET Core MVC** e **aplicativo .NET MAUI para Windows com SQLite local**.
 Web e Mobile consomem a API; somente a API acessa o MySQL.
 
 ## Abrir e apresentar no Windows
 
-1. Extraia o ZIP inteiro em uma pasta nova e abra `ClickClub` no VS Code ou
-   no Visual Studio. Instale SDK .NET 8 e mantenha o MySQL Server ligado.
-2. No MySQL Workbench, execute `banco/001_criar_banco.sql`. Crie o usuário
-   `clickclub` com acesso somente a `clickclub_dev`, conforme o guia abaixo.
+1. No notebook, clone o repositório ou atualize a cópia local e abra a pasta
+   `ClickClub`, onde está `ClickClub.sln`. Este projeto usa Windows x64,
+   SDK .NET 10, workload `maui-windows` e Microsoft Edge WebView2 Runtime.
+   A API e a Web precisam do ASP.NET Core Runtime 8 (x64).
+2. Ligue o MySQL Server e prepare o banco local com o
+   [guia do MySQL](INTEGRACAO_MYSQL.md). Para apresentar com os dados iniciais,
+   use um schema vazio. Para levar os dados de um ensaio anterior, restaure
+   um [backup do MySQL](banco/BACKUP_E_RESTAURACAO.md). O GitHub leva o código,
+   e a configuração da conexão é feita em cada computador.
 3. No PowerShell, na pasta `ClickClub`, configure a conexão local e inicie:
 
 ```powershell
@@ -25,17 +30,13 @@ com dados fictícios. Reiniciar **preserva** os dados existentes.
 
 - **Web:** http://localhost:5081
 - **Saúde da API:** http://localhost:5080/api/saude
-- **Android:** instruções em [GUIA_ANDROID.md](GUIA_ANDROID.md).
-- **Instalador pronto:** `mobile/apk/ClickClub.apk` (Debug ARM64, Android 7 ou
-  superior). A compilação e a assinatura foram verificadas; ensaie no telefone.
-- **Prévia das telas mobile no computador:** projeto `mobile/Preview`, porta
-  5082; instruções no guia Android. Usa a API e a interface compartilhada.
+- **Mobile:** janela MAUI do Windows. Veja [como abrir](mobile/README.md).
 
-Por padrão, a API aceita conexões na rede local para o Android; a Web fica
-em localhost. No telefone físico da mesma rede, informe no app
-`http://IP-DO-COMPUTADOR:5080/`. No emulador Android padrão, use
-`http://10.0.2.2:5080/`. Para limitar a API ao computador, inicie o script com
-`-RedeLocal:$false`.
+Antes da apresentação, confirme que `/api/saude` retorna `status: ok`, abra
+a Web e o Mobile e teste o login de demonstração. Faça a primeira compilação
+com internet disponível para restaurar os pacotes do NuGet.
+
+Para limitar a API ao computador, inicie o script com `-RedeLocal:$false`.
 
 ## Estrutura do ZIP
 
@@ -43,11 +44,10 @@ em localhost. No telefone físico da mesma rede, informe no app
 |---|---|
 | `api` | API, autorização/regras, EF Core/Pomelo, MySQL e migrações. |
 | `web` | Interface MVC de administração, serviços do associado e portaria. |
-| `mobile` | Aplicativo MAUI Android, interface e serviços/cache SQLite. |
+| `mobile` | Projeto único MAUI para Windows, com interface, cliente da API e cache SQLite. |
 | `banco` | Criação do schema, SQL versionado e backup/restauração. |
 | `testes` | Chamadas HTTP, verificações rápidas e suíte de integração. |
 | `INTEGRACAO_MYSQL.md` | Configuração do servidor MySQL no Workbench. |
-| `GUIA_ANDROID.md` | SDKs, compilação e acesso pela rede local. |
 | `ROTEIRO_APRESENTACAO.md` | Sequência de demonstração com contas fictícias. |
 | `TESTES_REALIZADOS.md` | Evidências e limites das verificações executadas. |
 
@@ -79,10 +79,16 @@ $env:Api__BaseUrl = "http://localhost:5080/"
 dotnet run --project .\web\ClickClub.Web.csproj --urls http://localhost:5081
 ```
 
+No terceiro terminal, abra a janela do Mobile:
+
+```powershell
+cd .\mobile
+dotnet run
+```
+
 Para gerar as soluções do Visual Studio, execute `Criar-Solucao.ps1`.
-`ClickClub.sln` contém todos os projetos, incluindo Android.
-`ClickClub.Servidor.sln` reúne os projetos que não exigem o workload Android.
-A compilação do app Android exige SDK/workload/JDK próprios, explicados no guia.
+`ClickClub.sln` contém a API, a Web, o Mobile e seus testes.
+`ClickClub.Servidor.sln` reúne somente a API e a Web.
 
 ## MySQL instalado ou Docker opcional
 
@@ -96,10 +102,10 @@ A API continua usando a conexão configurada pelo script. Não envie o `.env`.
 
 Mensalidades, pagamentos, multas e portaria são **simulados**, conforme o
 escopo acadêmico. O QR do associado pode ser exibido a partir do cache do
-app, mas a portaria sempre depende da verificação online da API. Push remoto,
-iOS e catracas físicas permanecem fora do escopo aprovado.
+app, mas a portaria sempre depende da verificação online da API. Esta edição
+do MAUI tem como destino o Windows. Push remoto e catracas físicas continuam
+fora do escopo.
 
 Consulte a matriz `MATRIZ_ENTREGA.md`, `PENDENCIAS.md` e o registro de testes
-para distinguir implementação, verificação em ambiente Linux e validação que
-precisa ser repetida no Windows/telefone do apresentador. Não foram acessados
-os arquivos do VS Code nem as credenciais MySQL do computador do usuário.
+para distinguir os testes históricos da versão Android e as verificações
+atuais do aplicativo para Windows.

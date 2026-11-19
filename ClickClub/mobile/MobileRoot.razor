@@ -12,8 +12,8 @@ else if(!Api.SignedIn)
     {
         <p class="eyebrow">CONEXÃO</p><h1>Conecte ao seu clube.</h1><p class="muted">Informe o endereço da API ClickClub que você iniciou no computador.</p>
         <form @onsubmit="SaveConfiguration" @onsubmit:preventDefault>
-            <FormField Name="server" Label="Endereço da API" Values="form" Type="url" Required="true" Placeholder="http://10.0.2.2:5080/" />
-            <div class="info-box">Emulador Android: <strong>10.0.2.2:5080</strong><br/>Celular físico: use o IP do computador na mesma rede.</div>
+            <FormField Name="server" Label="Endereço da API" Values="form" Type="url" Required="true" Placeholder="@MobileService.DefaultApiUrl" />
+            <div class="info-box">Se a API roda neste computador, use <strong>@MobileService.DefaultApiUrl</strong></div>
             <button class="button primary full" disabled="@busy">Salvar e voltar</button>
         </form>
     }
@@ -132,7 +132,7 @@ else
         {
             <PageHeading Title="Fale com o clube" Subtitle="Sua opinião também faz parte." OnBack='()=>Navigate("home")'/><button class="button primary full" @onclick="OpenTicket">Nova solicitação ou reclamação +</button>
             @if(tickets.Count==0){<EmptyState Icon="♡" Title="Estamos prontos para ouvir." Text="Abra um atendimento para falar com a administração."/>}
-            @foreach(var t in tickets){<article class="item-card"><div class="item-top"><span class="eyebrow">@t.Text("tipo")</span><span class="badge neutral">@t.Text("status")</span></div><h3>@t.Text("assunto")</h3><p>@t.Text("descricao")</p>@foreach(var answer in t?["respostas"].Array()){<div class="reply"><span>@Date(answer.Text("dataHora"))</span><p>@answer.Text("texto")</p></div>}<button class="button secondary" @onclick='()=>OpenReply(t)'>Adicionar resposta</button></article>}
+            @foreach(var t in tickets){<article class="item-card"><div class="item-top"><span class="eyebrow">@t.Text("tipo")</span><span class="badge neutral">@t.Text("status")</span></div><h3>@t.Text("assunto")</h3><p>@t.Text("descricao")</p>@foreach(var answer in (t?["respostas"]).Array()){<div class="reply"><span>@Date(answer.Text("dataHora"))</span><p>@answer.Text("texto")</p></div>}<button class="button secondary" @onclick='()=>OpenReply(t)'>Adicionar resposta</button></article>}
         }
         else if(page=="family")
         {

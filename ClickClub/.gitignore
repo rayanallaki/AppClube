@@ -13,5 +13,5 @@ logs/
 *.keystore
 *.jks
 
-# Build artifacts too large for GitHub
-mobile/apk/*.apk
+*.csproj.user
+/tmp_tests/

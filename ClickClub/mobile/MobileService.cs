@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 using QRCoder;
 using SQLite;
 
-namespace ClickClub.Mobile.Core;
+namespace ClickClub.Mobile;
 
 public interface IDeviceStorage
 {
@@ -37,6 +37,8 @@ public sealed record CardView(JsonObject Data, bool Offline, bool Expired, strin
 /// <summary>Cliente da API: segredos no SO, cache SQLite isolado por conta e servidor.</summary>
 public sealed class MobileService : IDisposable
 {
+    public const string DefaultApiUrl = "http://localhost:5080/";
+
     readonly HttpClient http;
     readonly IDeviceStorage storage;
     readonly SQLiteAsyncConnection cache;
@@ -78,7 +80,7 @@ public sealed class MobileService : IDisposable
     public async Task ConfigureUrlAsync(string address)
     {
         if (!Uri.TryCreate(address.Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https") || !string.IsNullOrEmpty(uri.UserInfo) || uri.AbsolutePath != "/" || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment))
-            throw new ApiException("Informe somente o endereço da API, como http://10.0.2.2:5080/.");
+            throw new ApiException($"Informe somente o endereço da API, como {DefaultApiUrl}");
         var normalized = uri.GetLeftPart(UriPartial.Authority) + "/";
         if (normalized != storage.ApiUrl) { await LogoutAsync(false); storage.ApiUrl = normalized; }
     }

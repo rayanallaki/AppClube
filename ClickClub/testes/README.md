@@ -63,5 +63,14 @@ concorrentes, financeiro, turmas/espera, eventos/visitantes, chamados,
 aprovação de adesão, persistência após reinício e logout. Os resultados
 observados da entrega estão em `../TESTES_REALIZADOS.md`.
 
-Teste isolado de falha de gravação e comportamento Android são verificações
+Teste isolado de falha de gravação e comportamento do app MAUI são verificações
 adicionais documentadas; não são implicitamente executadas por este script.
+
+## Suíte do cliente mobile
+
+```powershell
+dotnet run --project .\testes\ClickClub.Mobile.Tests -- .\tmp_tests
+```
+
+O executável usa o código do cliente que o MAUI compila, com HTTP simulado e
+um SQLite descartável em `tmp_tests`.
